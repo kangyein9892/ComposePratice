@@ -34,11 +34,30 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DemoScreen() {
-    MyTextField()
+
+    var textState by remember { mutableStateOf("") }
+
+    val onTextChange = { text : String ->
+        textState = text
+    }
+
+    MyTextField(text = textState, onTextChange = onTextChange)
+}
+
+// 상태를 부모 함수로 들어올림으로써, MyTextField는 이제 재사용한 비상태 컴포저블
+// 부모 함수로부터 접근가능, 다른 컴포저블에도 전달 가능
+@Composable
+fun MyTextField(text: String, onTextChange : (String) -> Unit) {
+
+    TextField(
+        value = text,
+        onValueChange = onTextChange
+    )
+
 }
 
 @Composable
-fun MyTextField() {
+fun MyTextField1() {
 
     var textState = remember { mutableStateOf("")}
 
