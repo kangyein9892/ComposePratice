@@ -43,7 +43,7 @@ fun MainScreen() {
 
         // 수직 배리어, button1과 button2 끝 가장자리에서 30dp 거리에 위치
         // 만약 폭이 다를 경우 두 컴포넌트 중 폭이 넓은 컴포넌트 끝 가장자리에서 30dp 위치
-        val barrier = createEndBarrier(button1, button2, margin = 30.dp)
+        val barrier = createEndBarrier(button1, button2)
 
         MyButton(text = "Button1", Modifier.width(100.dp).constrainAs(button1) {
             top.linkTo(parent.top, margin = 30.dp)
@@ -66,7 +66,11 @@ fun MainScreen() {
             // 이를 위해서는 button3 폭과 높이 제약은 fillConstraints 로 변경
             width = Dimension.fillToConstraints
             height = Dimension.fillToConstraints
-            
+
+            // 처음 건 button3이 button1의 변화에 의한 제약은 받지만, button2의 변화에 의한 제약은 받지 않음
+            // -> button1, button2 끝 가장자리에 배리어 만들고, button1 끝 가장자리 기준으로 button3의 시작 모서리에 제약 적용하는 대신, 배리어를 기준으로 시작 모서리에 제약 적용
+            // 두 버튼의 폭이 늘어나면 button3을 제약하는 캐리어가 이동하므로 결과적으로 button3의 폭이 줄어든다
+            start.linkTo(barrier, margin = 30.dp)
         })
     }
 }
