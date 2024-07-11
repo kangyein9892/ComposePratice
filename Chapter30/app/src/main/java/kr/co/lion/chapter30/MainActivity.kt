@@ -38,17 +38,15 @@ fun MainScreen() {
     ConstraintLayout(Modifier.size(width = 200.dp, height = 200.dp)) {
         val (button1, button2, button3) = createRefs()
 
-        // 반대 제약
         MyButton(text = "Button1", Modifier.constrainAs(button1) {
-            top.linkTo(parent.top, margin = 60.dp)
-
-            /*start.linkTo(parent.start)
-            end.linkTo(parent.end)*/
-            linkTo(parent.start, parent.end)
-
-            // 부모 안에서 자식 컴포넌트를 중앙에 배치하기 위한 것 뿐
-            // centerVerticallyTo(parent)
-            // centerHorizontallyTo(parent)
+            centerHorizontallyTo(parent)
+            top.linkTo(parent.top)
+            bottom.linkTo(button1.top)
+        })
+        MyButton(text = "Button2", Modifier.constrainAs(button2) {
+            centerHorizontallyTo(parent)
+            top.linkTo(button1.bottom)
+            bottom.linkTo(parent.bottom)
         })
     }
 }
