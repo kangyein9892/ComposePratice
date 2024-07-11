@@ -39,15 +39,10 @@ fun MainScreen() {
         val (button1, button2, button3) = createRefs()
 
         MyButton(text = "Button1", Modifier.constrainAs(button1) {
-            centerHorizontallyTo(parent)
-            top.linkTo(parent.top)
-            bottom.linkTo(button1.top)
+            top.linkTo(parent.top, margin = 60.dp)
+            linkTo(parent.start, parent.end, bias = 0.75f)
         })
-        MyButton(text = "Button2", Modifier.constrainAs(button2) {
-            centerHorizontallyTo(parent)
-            top.linkTo(button1.bottom)
-            bottom.linkTo(parent.bottom)
-        })
+
     }
 }
 
