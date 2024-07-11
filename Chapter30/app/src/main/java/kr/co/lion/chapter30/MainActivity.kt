@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import kr.co.lion.chapter30.ui.theme.Chapter30Theme
 
 class MainActivity : ComponentActivity() {
@@ -36,25 +38,35 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-    ConstraintLayout(Modifier.size(width = 400.dp, height = 220.dp)) {
+    ConstraintLayout(Modifier.size(width = 350.dp, height = 220.dp)) {
         val (button1, button2, button3) = createRefs()
 
-        // 버튼 3개를 제약하는 하나의 수직 가이드라인
-        val guide = createGuidelineFromStart(fraction = .60f)
+        // 수직 배리어, button1과 button2 끝 가장자리에서 30dp 거리에 위치
+        // 만약 폭이 다를 경우 두 컴포넌트 중 폭이 넓은 컴포넌트 끝 가장자리에서 30dp 위치
+        val barrier = createEndBarrier(button1, button2, margin = 30.dp)
 
-        MyButton(text = "Button1", Modifier.constrainAs(button1) {
+        MyButton(text = "Button1", Modifier.width(100.dp).constrainAs(button1) {
             top.linkTo(parent.top, margin = 30.dp)
-            end.linkTo(guide, margin = 30.dp)
+            start.linkTo(parent.start, margin = 8.dp)
         })
 
-        MyButton(text = "Button2", Modifier.constrainAs(button2) {
+        MyButton(text = "Button2", Modifier.width(150.dp).constrainAs(button2) {
             top.linkTo(button1.bottom, margin = 20.dp)
-            start.linkTo(guide, margin = 40.dp)
+            start.linkTo(parent.start, margin = 8.dp)
         })
 
-        MyButton(text = "Button3", Modifier.constrainAs(button3) {
-            top.linkTo(button2.bottom, margin = 40.dp)
-            end.linkTo(guide, margin = 20.dp)
+        MyButton(text = "Button3", Modifier.width(100.dp).constrainAs(button3) {
+            linkTo(parent.top, parent.bottom,
+                topMargin = 8.dp, bottomMargin = 8.dp)
+            linkTo(button1.end, parent.end,
+                startMargin = 30.dp, endMargin = 8.dp)
+
+            // button3 컴포넌트 크기는 제약이 허용하는 최대공간 채우도록 설정
+            // 버튼은 높이 채우고 동시에 button1, button2 크기를 변경함에 따라 폭 조정
+            // 이를 위해서는 button3 폭과 높이 제약은 fillConstraints 로 변경
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
+            
         })
     }
 }
