@@ -12,6 +12,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TopLevel(model: MyViewModel = MyViewModel()) {
+    val customName: String by model.customerName.observeAsState("")
     MainScreen(count = model.customerCount) { model.increaseCount() }
 }
 
