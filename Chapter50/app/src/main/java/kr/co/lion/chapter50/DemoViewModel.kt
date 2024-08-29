@@ -28,7 +28,7 @@ class DemoViewModel: ViewModel() {
             it % 2 == 0
         }*/
         .map {
-            "Current value $it"
+            "Current value = $it"
         }
 
     /*val newFlow = myFlow

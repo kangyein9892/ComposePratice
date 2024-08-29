@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.Flow
 import kr.co.lion.chapter50.ui.theme.Chapter50Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.buffer
+import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,13 +57,15 @@ fun MainScreen(flow: Flow<String>){
     var count by remember { mutableStateOf<String>("Current value =")}
 
     LaunchedEffect(Unit) {
-        try{
-            flow.collect {
+        val elapsedTime = measureTimeMillis {
+            flow
+                .buffer() // 처리 속도 높이기
+                .collect {
                 count = it
+                delay(1000)
             }
-        } finally {
-            count = "Flow stream ended"
         }
+        count = "Duration = $elapsedTime"
     }
 
     Column(
