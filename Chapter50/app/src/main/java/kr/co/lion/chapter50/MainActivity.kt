@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    ScreenSetup()
                 }
             }
         }
@@ -64,7 +64,7 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()){
 @Composable
 fun MainScreen(viewModel: DemoViewModel){
 
-    val count by viewModel.stateFlow.collectAsState()
+    val count by viewModel.sharedFlow.collectAsState(initial = 0)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -72,7 +72,7 @@ fun MainScreen(viewModel: DemoViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "$count", style = TextStyle(fontSize = 40.sp))
-        Button(onClick = { viewModel.increaseValue() }) {
+        Button(onClick = { viewModel.startSharedFlow() }) {
             Text("Click Me")
         }
     }
