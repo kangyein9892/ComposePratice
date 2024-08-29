@@ -10,8 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -45,7 +49,19 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()){
 
 @Composable
 fun MainScreen(flow: Flow<String>){
-    val count by flow.collectAsState(initial = "Current value =")
+    // val count by flow.collectAsState(initial = "Current value =")
+
+    var count by remember { mutableStateOf<String>("Current value =")}
+
+    LaunchedEffect(Unit) {
+        try{
+            flow.collect {
+                count = it
+            }
+        } finally {
+            count = "Flow stream ended"
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
