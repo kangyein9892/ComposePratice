@@ -25,11 +25,17 @@ import kotlinx.coroutines.flow.Flow
 import kr.co.lion.chapter50.ui.theme.Chapter50Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.reduce
+import kotlinx.coroutines.flow.zip
 import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
@@ -57,22 +63,17 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()){
 @Composable
 fun MainScreen(viewModel: DemoViewModel){
 
-    var count by remember { mutableStateOf<Int>(0) }
+    var count by remember { mutableStateOf<String>("") }
 
     LaunchedEffect(Unit) {
-
-        // 하나의 flow 연결, 동기적 실행
-        viewModel.myFlow
-            .flatMapConcat { viewModel.doubleIt(it) }
+        val flow1 = (1..5).asFlow()
+            .onEach { delay(1000) }
+        val flow2 = flowOf("one", "two", "three", "four")
+            .onEach { delay(1500) }
+        flow1.zip(flow2) { value, string -> "$value, $string"}
             .collect{ count = it }
-
-        // 비동기적 수집
-        viewModel.myFlow
-            .flatMapMerge { viewModel.doubleIt(it) }
-            .collect {
-                count = it
-                println("Count = $it")
-            }
+        flow1.combine(flow2) { value, string -> "$value, $string"}
+            .collect { count = it }
     }
 
     Column(
