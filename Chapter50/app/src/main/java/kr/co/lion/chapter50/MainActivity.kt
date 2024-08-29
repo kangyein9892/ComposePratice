@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,18 +64,7 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()){
 @Composable
 fun MainScreen(viewModel: DemoViewModel){
 
-    var count by remember { mutableStateOf<String>("") }
-
-    LaunchedEffect(Unit) {
-        val flow1 = (1..5).asFlow()
-            .onEach { delay(1000) }
-        val flow2 = flowOf("one", "two", "three", "four")
-            .onEach { delay(1500) }
-        flow1.zip(flow2) { value, string -> "$value, $string"}
-            .collect{ count = it }
-        flow1.combine(flow2) { value, string -> "$value, $string"}
-            .collect { count = it }
-    }
+    val count by viewModel.stateFlow.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -82,6 +72,9 @@ fun MainScreen(viewModel: DemoViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+        Button(onClick = { viewModel.increaseValue() }) {
+            Text("Click Me")
+        }
     }
 }
 
