@@ -13,11 +13,16 @@ import kotlinx.coroutines.flow.transform
 class DemoViewModel: ViewModel() {
 
     val myFlow: Flow<Int> = flow {
-        // 생산자 블록
-        for (i in 0..9){
+        for (i in 1..5){
+            delay(1000)
             emit(i)
-            delay(2000)
         }
+    }
+
+    fun doubleIt(value: Int) = flow {
+        emit(value)
+        delay(1000)
+        emit(value + value)
     }
 
     val myFlow2 = flowOf(2, 4, 6, 8)
