@@ -26,6 +26,8 @@ import kr.co.lion.chapter50.ui.theme.Chapter50Theme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.reduce
 import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
@@ -47,25 +49,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ScreenSetup(viewModel: DemoViewModel = viewModel()){
-    MainScreen(viewModel.newFlow)
+    MainScreen(viewModel.myFlow)
 }
 
 @Composable
-fun MainScreen(flow: Flow<String>){
+fun MainScreen(flow: Flow<Int>){
     // val count by flow.collectAsState(initial = "Current value =")
 
-    var count by remember { mutableStateOf<String>("Current value =")}
+    var count by remember { mutableStateOf<Int>(0) }
 
     LaunchedEffect(Unit) {
-        val elapsedTime = measureTimeMillis {
-            flow
-                .buffer() // 처리 속도 높이기
-                .collect {
-                count = it
-                delay(1000)
+        flow
+            /*.reduce{ accmulator, value ->
+            count = accmulator
+            accmulator + value
+        }*/
+            .fold(10) { accumulator, value ->
+                count = accumulator
+                accumulator + value
             }
-        }
-        count = "Duration = $elapsedTime"
     }
 
     Column(
